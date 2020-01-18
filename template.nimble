@@ -2,7 +2,7 @@
 version       = "0.0.1"
 author        = "D-Nice"
 description   = "Template repo"
-license       = "MIT"
+license       = "TBD"
 srcDir        = "src"
 
 # Dependencies
