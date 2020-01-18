@@ -1,0 +1,15 @@
+# ignore binary files (denoted by no extension)
+*
+!*.*
+!*/
+
+# windows
+*.exe 
+*.ilk 
+*.pdb
+
+# ignore fuzzer output
+tests/fuzzer/out*
+
+# include fuzzer input
+!*/fuzzer/in*/*
