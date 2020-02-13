@@ -2,10 +2,11 @@
 *
 !*.*
 !*/
+!LICENSE
 
 # windows
-*.exe 
-*.ilk 
+*.exe
+*.ilk
 *.pdb
 
 # ignore fuzzer output
@@ -13,3 +14,6 @@ tests/fuzzer/out*
 
 # include fuzzer input
 !*/fuzzer/in*/*
+
+# ignore docs output
+public/*
