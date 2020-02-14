@@ -1,0 +1,23 @@
+name: linter
+on:
+  - push
+  - pull_request
+jobs:
+  nim:
+    strategy:
+      matrix:
+        check:
+          - check_src
+          - check_tests
+        img:
+          - latest-alpine
+          - 1.0.6-alpine
+      fail-fast: false
+    name: ${{ matrix.check }}@${{ matrix.img }}
+    runs-on: ubuntu-latest
+    container:
+      image: nimlang/nim:${{ matrix.img }}
+    steps:
+    - uses: actions/checkout@v1
+    - run: nimble ${{ matrix.check }}
+
