@@ -17,3 +17,6 @@ tests/fuzzer/out*
 
 # ignore docs output
 public/*
+
+# ignore alt bin ext
+*.out
