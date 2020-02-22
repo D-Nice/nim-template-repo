@@ -23,12 +23,19 @@ requires "nim >= 1.0.0"
 const pkgName = projectName()[0 .. projectName().rfind('_') - 1]
 
 func listAllNimFiles(dir: string): seq[string] =
-  result.add dir.listFiles.filter(x => x[dir.len .. x.high].endsWith(".nim"))
-  for sdir in dir.listDirs:
+  var ldir = if dir == "": "." else: dir
+  result.add ldir.listFiles.filter(x => x[ldir.len .. x.high].endsWith(".nim"))
+  for sdir in ldir.listDirs:
     result.add sdir.listAllNimFiles
 
 proc srcPaths: seq[string] =
-  srcDir.listAllNimFiles
+  if srcDir != "":
+    result.add srcDir.listAllNimFiles
+  else:
+    result.add pkgName & ".nim"
+    result.add pkgName.listAllNimFiles
+  for dir in installDirs:
+    result.add dir.listAllNimFiles
 
 func testPaths: seq[string] =
   ## files in `/tests` starting with t are tests
