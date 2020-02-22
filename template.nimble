@@ -2,20 +2,25 @@ import
   sugar,
   sequtils,
   strutils
-
 from os import `/`
 
+when "src".dirExists:
+  const vDir = "src" / ""
+else:
+  const vDir = ""
+
 # Package
-version       = "0.0.1"
+version       = (vDir & "version.txt").staticRead.splitLines[0]
 author        = "D-Nice"
 description   = "Template repo"
 license       = "Apache-2.0"
 srcDir        = "src"
-
-const pkgName = projectName()[0 .. projectName().rfind('_') - 1]
+installExt  = @["nim", "txt"]
 
 # Dependencies
 requires "nim >= 1.0.0"
+
+const pkgName = projectName()[0 .. projectName().rfind('_') - 1]
 
 func listAllNimFiles(dir: string): seq[string] =
   result.add dir.listFiles.filter(x => x[dir.len .. x.high].endsWith(".nim"))

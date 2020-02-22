@@ -1,0 +1,8 @@
+{
+  "packageFiles": [
+    {
+      "filename": "src/version.txt",
+      "type": "plain-text"
+    }
+  ]
+}
