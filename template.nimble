@@ -1,3 +1,10 @@
+import
+  sugar,
+  sequtils,
+  strutils
+
+from os import `/`
+
 # Package
 version       = "0.0.1"
 author        = "D-Nice"
@@ -5,29 +12,28 @@ description   = "Template repo"
 license       = "Apache-2.0"
 srcDir        = "src"
 
+const pkgName = projectName()[0 .. projectName().rfind('_') - 1]
+
 # Dependencies
 requires "nim >= 1.0.0"
 
-import
-  sugar,
-  sequtils,
-  strutils
+func listAllNimFiles(dir: string): seq[string] =
+  result.add dir.listFiles.filter(x => x[dir.len .. x.high].endsWith(".nim"))
+  for sdir in dir.listDirs:
+    result.add sdir.listAllNimFiles
 
-func srcPaths: seq[string] =
-  ## add additional src dirs here, but ensure src is top
-  const dirs =
-    @[
-      "src",
-    ]
-  for dir in dirs:
-    result.add(dir.listFiles.filter(x => x[dir.len .. x.high].endsWith(".nim")))
+proc srcPaths: seq[string] =
+  srcDir.listAllNimFiles
 
 func testPaths: seq[string] =
+  ## files in `/tests` starting with t are tests
   const dir = "tests/"
   return dir.listFiles.filter(x =>
     x[dir.len .. x.high].startsWith('t') and
     x.endsWith(".nim")
   )
+
+let main = srcPaths()[0]
 
 # Nimscript Tasks
 
@@ -46,7 +52,7 @@ task check_all, "Compile check everything and run tests":
 task docs, "Deploy doc html + search index to public/ directory":
   let
     deployDir = projectDir() & "/public/"
-    genDocCmd = "nim doc --out:$1 --index:on $2" % [deployDir, srcPaths()[0]]
+    genDocCmd = "nim doc --out:$1 --index:on $2" % [deployDir, main]
     genTheIndexCmd = "nim buildIndex -o:$1/theindex.html $1" % [deployDir]
     deployJsFile = deployDir & "dochack.js"
     docHackJsSource = "https://nim-lang.github.io/Nim/dochack.js"
@@ -54,7 +60,22 @@ task docs, "Deploy doc html + search index to public/ directory":
   exec genDocCmd
   exec genTheIndexCmd
   when defined Linux:
-    exec "ln -sf " & srcPaths()[0][4 .. ^4] & "html public/index.html"
+    exec "ln -sf " & pkgName & ".html public/index.html"
   if not fileExists deployJsFile:
     withDir deployDir:
       exec "curl -LO " & docHackJsSource
+
+## extras
+task compileStaticHard, "Compile statically with hardening flags":
+  exec """nim --passC:"-pie -fPIE -fstack-clash-protection -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -ftrapv" --passL:"-static" -d:release --opt:size """ & main
+
+task i, "Install any dev nimble or distro deps":
+  exec "nimble install cligen" # nimble deps
+  exec "apt-get update && apt-get install -y binutils upx-ucl"
+
+task compressBin, "Compress the size of the produced binary for distribution":
+  if binDir == "":
+    echo "Please specify a binDir in your package first..."
+    quit 1
+  exec "strip -s " & binDir / pkgName
+  exec "upx --best " & binDir / pkgName
