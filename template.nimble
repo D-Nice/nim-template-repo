@@ -4,18 +4,19 @@ import
   strutils
 from os import `/`
 
-when "src".dirExists:
-  const vDir = "src" / ""
-else:
-  const vDir = ""
+const vFile = "version.txt"
+when (thisDir() / "src" / vFile).fileExists:
+  const vPath = thisDir() / "src" / vFile
+when (thisDir() / vFile).fileExists:
+  const vPath = thisDir() / vFile
 
 # Package
-version       = (vDir & "version.txt").staticRead.splitLines[0]
+version       = vPath.staticRead.splitLines[0]
 author        = "D-Nice"
 description   = "Template repo"
 license       = "Apache-2.0"
 srcDir        = "src"
-installExt  = @["nim", "txt"]
+installExt    = @["nim", "txt"]
 
 # Dependencies
 requires "nim >= 1.0.0"
