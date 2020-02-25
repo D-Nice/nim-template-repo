@@ -4,5 +4,11 @@
       "filename": "src/version.txt",
       "type": "plain-text"
     }
+  ],
+  "bumpFiles": [
+    {
+      "filename": "src/version.txt",
+      "type": "plain-text"
+    }
   ]
 }
