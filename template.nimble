@@ -37,6 +37,10 @@ proc srcPaths: seq[string] =
     result.add pkgName.listAllNimFiles
   for dir in installDirs:
     result.add dir.listAllNimFiles
+  if result.len == 0:
+    ## workaround for installing as nimble dep
+    ## so that there's no out of bound errors
+    result = @[""]
 
 func testPaths: seq[string] =
   ## files in `/tests` starting with t are tests
