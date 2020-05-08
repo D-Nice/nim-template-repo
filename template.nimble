@@ -84,7 +84,7 @@ task docs, "Deploy doc html + search index to public/ directory":
 
 ## extras
 task compileStaticHard, "Compile statically with hardening flags":
-  exec """nim --passC:"-pie -fPIE -fstack-clash-protection -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -ftrapv" --passL:"-static" -d:release --opt:size """ & main
+  exec """nim c --passC:"-pie -fPIE -fstack-clash-protection -fstack-protector-all -Wstack-protector --param ssp-buffer-size=4 -ftrapv" --passL:"-static" -d:release --opt:size """ & main
 
 task i, "Install any dev nimble or distro deps":
   exec "nimble install cligen" # nimble deps
